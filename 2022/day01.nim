@@ -1,6 +1,6 @@
-import std/[strutils]
+import std/[strutils, strformat, algorithm]
 
-import ../inputs
+import ../inputs, ./printer
 
 var elves: seq[seq[int]]
 
@@ -22,5 +22,18 @@ var elvesSum*: seq[int]
 for elf in elves:
     elvesSum.add(elf.sum())
 
-echo elvesSum.max()
 
+# -----------------------------------------------------------------------------
+# Part 1:
+# -----------------------------------------------------------------------------
+
+solution(elvesSum.max(), "Elf with most snacks")
+
+# -----------------------------------------------------------------------------
+# Part 2:
+# -----------------------------------------------------------------------------
+
+var elvesSumSorted: seq[int] = elvesSum
+elvesSumSorted.sort()
+
+solution(&"{elvesSumSorted[^1] + elvesSumSorted[^2] + elvesSumSorted[^3]}", "Total snacks of top three elves")
