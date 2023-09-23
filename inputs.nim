@@ -1,4 +1,6 @@
-import std/[strformat]
+import std/[strutils, strformat, tables]
+
+var cache: Table[int, string]
 
 proc getInputFile*(day: int): string =
     var dayString: string =
@@ -7,6 +9,18 @@ proc getInputFile*(day: int): string =
     result = &"./inputs/day{dayString}.input"
 
 proc getInput*(day: int): string =
+    if cache.hasKey(day): return cache[day]
+
     let file: string = day.getInputFile()
     result = file.readFile()
 
+    cache[day] = result
+
+proc getInputLines*(day: int): seq[string] =
+    let file: string = day.getInput()
+    result = file.split("\n")
+
+iterator inputLines*(day: int): string =
+    let lines: seq[string] = day.getInputLines()
+    for line in lines:
+        yield line
