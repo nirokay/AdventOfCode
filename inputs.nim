@@ -11,7 +11,7 @@ proc getInputFile*(day: int): string =
 proc getInput*(day: int): string =
     if cache.hasKey(day): return cache[day]
 
-    let file: string = day.getInputFile()
+    let file: string = day.getInputFile().strip()
     result = file.readFile()
 
     cache[day] = result
