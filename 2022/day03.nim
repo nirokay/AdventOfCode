@@ -1,7 +1,5 @@
-import std/[tables, strutils, options, sequtils, algorithm]
+import std/[strutils, options, sequtils, algorithm]
 import ../inputs, ./printer
-
-let input: string = getInput(3)
 
 proc getCharValue(c: char): int =
     let offset =
