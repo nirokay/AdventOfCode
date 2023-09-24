@@ -1,4 +1,4 @@
-import std/[strutils, sequtils, options]
+import std/[strutils, options]
 import ./printer, ../inputs
 
 let input: string = getInput(6).strip()
