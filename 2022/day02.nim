@@ -1,5 +1,5 @@
 import std/[strutils, math]
-import ./printer, ../inputs
+import utils
 
 type
     Element* = enum

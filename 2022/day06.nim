@@ -1,5 +1,5 @@
 import std/[strutils, options]
-import ./printer, ../inputs
+import utils
 
 let input: string = getInput(6).strip()
 

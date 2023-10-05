@@ -1,5 +1,5 @@
 import std/[strutils, options, tables]
-import ./printer, ../inputs
+import utils
 
 type Command* = object
     command*: string

@@ -1,5 +1,5 @@
 import std/[strutils]
-import ../inputs, ./printer
+import utils
 
 var crates: array[9, seq[char]]
 block `initial position of crates`:

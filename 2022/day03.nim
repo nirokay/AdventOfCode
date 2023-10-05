@@ -1,5 +1,5 @@
 import std/[strutils, options, sequtils, algorithm]
-import ../inputs, ./printer
+import utils
 
 proc getCharValue(c: char): int =
     let offset =

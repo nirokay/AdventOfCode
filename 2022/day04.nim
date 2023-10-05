@@ -1,5 +1,5 @@
 import std/[strutils]
-import ../inputs, ./printer
+import utils
 
 
 var schedules: seq[array[2, array[2, int]]]

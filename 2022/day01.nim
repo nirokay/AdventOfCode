@@ -1,6 +1,5 @@
 import std/[strutils, strformat, algorithm]
-
-import ../inputs, ./printer
+import utils
 
 var elves: seq[seq[int]]
 
