@@ -1,19 +1,19 @@
-import std/[strutils, math, algorithm]
+import std/[strutils, math, algorithm, tables]
 import utils
 
 var
-    locationsLeft: seq[int]
-    locationsRight: seq[int]
+    leftLocations: seq[int]
+    rightLocations: seq[int]
 
 for line in inputLines(1):
     if line == "": continue
     let split: seq[string] = line.strip().split(" ")
-    locationsLeft.add split[0].parseInt()
-    locationsRight.add split[^1].parseInt()
+    leftLocations.add split[0].parseInt()
+    rightLocations.add split[^1].parseInt()
 
-locationsLeft.sort(Ascending)
-locationsRight.sort(Ascending)
-assert locationsLeft.len() == locationsRight.len()
+leftLocations.sort(Ascending)
+rightLocations.sort(Ascending)
+assert leftLocations.len() == rightLocations.len()
 
 
 # -----------------------------------------------------------------------------
@@ -21,8 +21,8 @@ assert locationsLeft.len() == locationsRight.len()
 # -----------------------------------------------------------------------------
 
 var distances: seq[int]
-for i in 0 .. locationsLeft.len() - 1:
-    distances.add abs(locationsLeft[i] - locationsRight[i])
+for i in 0 .. leftLocations.len() - 1:
+    distances.add abs(leftLocations[i] - rightLocations[i])
 
 
 solution(distances.sum(), "Total distance between lists")
@@ -32,4 +32,13 @@ solution(distances.sum(), "Total distance between lists")
 # Part 2:
 # -----------------------------------------------------------------------------
 
+var
+    leftCount: CountTableRef[int] = newCountTable(leftLocations)
+    rightCount: CountTableRef[int] = newCountTable(rightLocations)
+    similarities: seq[int]
 
+for number, leftOccurrences in leftCount:
+    let rightOccurrences: int = if rightCount.hasKey(number): rightCount[number] else: 0
+    similarities.add number * rightOccurrences
+
+solution(similarities.sum(), "Similarity score between both lists")
