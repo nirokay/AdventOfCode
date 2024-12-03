@@ -3,10 +3,10 @@ import utils
 
 let
     memory: string = getInput(3).strip()
-    part1pattern: Regex = re"mul\(\d{1,3},\d{1,3}\)|do\(\)|don't\(\)"
+    pattern: Regex = re"mul\(\d{1,3},\d{1,3}\)|do\(\)|don't\(\)"
 
 var expressions: seq[string]
-for expression in memory.findAll(part1pattern):
+for expression in memory.findAll(pattern):
     expressions.add expression
 
 proc parseInstructions*(enableConditions: bool): seq[array[2, int]] =
