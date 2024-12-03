@@ -1,4 +1,4 @@
-import std/[strutils, algorithm, sequtils]
+import std/[strutils, algorithm]
 import utils
 
 var reports: seq[seq[int]]
