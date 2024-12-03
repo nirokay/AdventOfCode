@@ -34,7 +34,5 @@ proc solution*[T](content: T, customMessage: string = "Solution") =
         borderBottom & "\n"
     ].join("\n")
 
-    # Increase part copunter:
+    # Increase part counter:
     solutionPartCounter.inc()
-
-solution("a", "aaa")
