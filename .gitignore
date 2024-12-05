@@ -7,3 +7,6 @@
 
 # Inputs:
 *.input
+
+# Session ID file:
+.session-id
