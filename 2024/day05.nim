@@ -60,13 +60,19 @@ for line in inputPageUpdates:
 
 
 # -----------------------------------------------------------------------------
-# Part 1:
+# Part 1 & 2:
 # -----------------------------------------------------------------------------
 
-var partOneSolutions: seq[int]
+var
+    partOneSolutions: seq[int]
+    partTwoSolutions: seq[int]
 for rule in updateRules:
     let correctRule: seq[int] = rule.sorted(sortCorrectly)
-    if rule != correctRule: continue # Skip incorrect rule
+    if rule != correctRule:
+        partTwoSolutions. add correctRule.getMiddleValue()
+        continue
     partOneSolutions.add rule.getMiddleValue()
 
 solution(partOneSolutions.sum(), "Sum of all middle indices")
+solution(partTwoSolutions.sum(), "Sum of all corrected middle indices")
+
