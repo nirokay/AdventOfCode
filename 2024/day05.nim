@@ -69,7 +69,7 @@ var
 for rule in updateRules:
     let correctRule: seq[int] = rule.sorted(sortCorrectly)
     if rule != correctRule:
-        partTwoSolutions. add correctRule.getMiddleValue()
+        partTwoSolutions.add correctRule.getMiddleValue()
         continue
     partOneSolutions.add rule.getMiddleValue()
 
