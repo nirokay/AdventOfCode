@@ -10,7 +10,7 @@ let
 type SortOrder = object
     value*: int
     preceding*, following*: seq[int]
-var sortRules: Table[int, SortOrder] # int is before ints
+var sortRules: Table[int, SortOrder]
 
 for line in inputPageOrderingRules:
     let
@@ -23,17 +23,10 @@ for line in inputPageOrderingRules:
     sortRules[x].following.add y
     sortRules[y].preceding.add x
 
-#[
-for key, values in sortRules:
-    echo key, ":"
-    echo "\tComes before: ", values.preceding
-    echo "\tComes after:  ", values.following
-]#
-
 proc sortCorrectly(valX, valY: int): int =
     let
-        x: SortOrder = sortRules[valX] # assumed to be lower
-        y: SortOrder = sortRules[valY] # assumed to be higher
+        x: SortOrder = sortRules[valX]
+        y: SortOrder = sortRules[valY]
 
     result = block:
         if x.value == y.value: 0
@@ -75,4 +68,3 @@ for rule in updateRules:
 
 solution(partOneSolutions.sum(), "Sum of all middle indices")
 solution(partTwoSolutions.sum(), "Sum of all corrected middle indices")
-
