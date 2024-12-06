@@ -59,10 +59,12 @@ proc parseMap(lines: seq[string]): AreaMap =
             let tile: AreaTile = c.parseCharacter()
             result.map[row][col] = tile
             if tile.isGuard(): result.currGuardLocation = (row, col)
+
 proc countTiles(area: AreaMap, tiles: varargs[AreaTile]): int =
     for line in area.map:
         for tile in line:
             if tile in tiles: inc result
+
 proc getRotation(tile: AreaTile): AreaTile =
     if unlikely(not tile.isGuard()):
         raise ValueError.newException("Passed tile is not a guard!")
@@ -72,6 +74,7 @@ proc getRotation(tile: AreaTile): AreaTile =
         of GuardDown: GuardLeft
         of GuardLeft: GuardUp
         else: tile # this should never happen
+
 proc positiveNegativeMovement(tile: AreaTile): Vec2 =
     result = case tile:
         of GuardUp: (0, -1)
@@ -79,6 +82,7 @@ proc positiveNegativeMovement(tile: AreaTile): Vec2 =
         of GuardDown: (0, 1)
         of GuardRight: (1, 0)
         else: (0, 0)
+
 proc executeGuardMovement(area: var AreaMap) =
     let
         starting: Vec2 = area.currGuardLocation
@@ -110,14 +114,14 @@ proc executeGuardMovement(area: var AreaMap) =
             area.prevGuardLocation = some starting
         return
     except IndexDefect:
-        #echo "Guard left the area"
+        # echo "Guard left the area"
         area.shouldContinue = false
         area.map[starting.row][starting.col] = VisitedPath
         return
 
 var steps: int
 proc simulate(area: var AreaMap) =
-    #echo "Guard is starting their patrol"
+    # echo "Guard is starting their patrol"
     area.shouldContinue = true
     steps = 0
     while area.shouldContinue:
@@ -147,6 +151,8 @@ solution(area.countTiles(VisitedPath), "Unique locations visited by the guard")
 var
     loopsDetected: int
     universeCount: int
+
+# This is **A** way of solving this puzzle (very efficient, very code, very nice):
 for row, line in defaultArea.map:
     for col, tile in line:
         if tile != Empty: continue
