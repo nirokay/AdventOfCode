@@ -7,13 +7,13 @@ let
 
 type
     AreaTile = enum
-        Empty = '.',
-        VisitedPath = 'X',
-        Obstacle = '#',
-        GuardUp = '^',
-        GuardLeft = '<',
-        GuardDown = 'v',
-        GuardRight = '>'
+        Empty,
+        VisitedPath,
+        Obstacle,
+        GuardUp,
+        GuardLeft,
+        GuardDown,
+        GuardRight
     Map = array[130, array[130, AreaTile]]
     Vec2 = tuple[row, col: int]
     AreaMap = object
@@ -110,25 +110,56 @@ proc executeGuardMovement(area: var AreaMap) =
             area.prevGuardLocation = some starting
         return
     except IndexDefect:
-        echo "oops"
+        #echo "Guard left the area"
         area.shouldContinue = false
         area.map[starting.row][starting.col] = VisitedPath
         return
 
+var steps: int
 proc simulate(area: var AreaMap) =
-    echo "Simulation..."
+    #echo "Guard is starting their patrol"
     area.shouldContinue = true
+    steps = 0
     while area.shouldContinue:
+        inc steps
         area.executeGuardMovement()
-        #echo $area.map
-        #sleep 2
+
+        if steps >= 100_000: return
+    steps = -1
+
+let defaultArea: AreaMap = inputLines.parseMap()
 
 
 # -----------------------------------------------------------------------------
 # Part 1:
 # -----------------------------------------------------------------------------
 
-var area: AreaMap = inputLines.parseMap()
+var area: AreaMap = defaultArea
 area.simulate()
 
 solution(area.countTiles(VisitedPath), "Unique locations visited by the guard")
+
+
+# -----------------------------------------------------------------------------
+# Part 2:
+# -----------------------------------------------------------------------------
+
+var
+    loopsDetected: int
+    universeCount: int
+for row, line in defaultArea.map:
+    for col, tile in line:
+        if tile != Empty: continue
+
+        # Printing slows down the process a lot, but makes the wait more barrable:
+        inc universeCount
+        stdout.write "\rLooking into universe ", universeCount, " / ", defaultArea.countTiles(Empty)
+        stdout.flushFile()
+
+        var area: AreaMap = defaultArea
+        area.map[row][col] = Obstacle
+        area.simulate()
+        if steps != -1:
+            inc loopsDetected
+
+solution(loopsDetected, "Unique locations where an obstacle would end in a loop")
