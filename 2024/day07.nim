@@ -1,4 +1,4 @@
-import std/[strutils, math, bitops, algorithm, sequtils]
+import std/[strutils, math, algorithm, sequtils]
 import utils
 
 let
@@ -9,10 +9,23 @@ type
     Operation = enum
         Multiplication = "*"
         Addition = "+"
+        Concatenation = "&"
     Expression = object
         targetValue*: int
         numbers*: seq[int]
         operations*, validOperations*: seq[seq[Operation]]
+
+proc toBase(number, base: int, minLength: int = 0): seq[int] =
+    ## Converts an `int` into a list of digits of base `n`
+    result = @[]
+    var buffer: int = number
+    while buffer > 0:
+        let remainder: int = buffer mod base
+        buffer = buffer div base
+        result.add remainder
+    while result.len() < minLength:
+        result.add 0
+    result.reverse()
 
 var expressions: seq[Expression]
 for line in inputLines:
@@ -35,19 +48,17 @@ proc getAllOperations(expression: Expression, operations: seq[Operation]): seq[s
     if maxOperations < 0:
         raise ValueError.newException("Passed Expression is fucked up:\n" & $expression)
 
-    for iteration in 0 .. maxVarieties - 1: # 0001
+    var count: int
+    while true:
+        let digits: seq[int] = count.toBase(operations.len(), expression.numbers.len() - 1)
+        if unlikely digits.len() >= expression.numbers.len(): break
+
         result.add @[]
-        let bitsLength: int = int ceil(log2(float maxVarieties + 1))
-        for pos in 0 .. bitsLength: # 000[1]
-            result[^1].add(
-                if iteration.testBit(pos): Multiplication
-                else: Addition
-            )
-    # "Fixing" bugs:
-    for i, operations in result:
-        result[i] = operations[0 .. expression.numbers.len() - 2]
-        assert expression.numbers.len() == result[i].len() + 1
-    result = result.deduplicate()
+        for digit in digits:
+            result[^1].add operations[digit]
+
+        inc count
+
     assert result.len() == maxVarieties
 
 proc validateOperations(expression: var Expression) =
@@ -63,7 +74,23 @@ proc validateOperations(expression: var Expression) =
             case operations.pop():
             of Multiplication: solution *= number
             of Addition: solution += number
-        if solution == expression.targetValue: expression.validOperations.add originalOperations
+            of Concatenation: solution = parseInt($solution & $number)
+        if solution == expression.targetValue:
+            expression.validOperations.add originalOperations
+            expression.validOperations = expression.validOperations.deduplicate()
+
+proc validateExpressions(solution: var int, operations: seq[Operation]) =
+    for i, expression in expressions:
+        var newExpression: Expression = expression
+        newExpression.operations &= expression.getAllOperations(operations)
+        newExpression.validateOperations()
+        expressions[i] = newExpression
+
+        if newExpression.validOperations.len() != 0:
+            solution += expression.targetValue
+
+        stdout.write "\rValidating number ", i + 1, " / ", expressions.len()
+        stdout.flushFile()
 
 
 # -----------------------------------------------------------------------------
@@ -71,18 +98,14 @@ proc validateOperations(expression: var Expression) =
 # -----------------------------------------------------------------------------
 
 var partOneSolution: int
-
-for i, expression in expressions:
-    var newExpression: Expression = expression
-    newExpression.operations = expression.getAllOperations(@[Multiplication, Addition])
-    newExpression.validateOperations()
-    expressions[i] = newExpression
-
-    if newExpression.validOperations.len() != 0:
-        partOneSolution += expression.targetValue
-
-    stdout.write "\rValidating number ", i + 1, " / ", expressions.len()
-    stdout.flushFile()
-
+partOneSolution.validateExpressions(@[Multiplication, Addition])
 solution(partOneSolution, "Total calibration result")
 
+
+# -----------------------------------------------------------------------------
+# Part 2:
+# -----------------------------------------------------------------------------
+
+var partTwoSolution: int
+partTwoSolution.validateExpressions(@[Multiplication, Addition, Concatenation]) # Takes a long ass time
+solution(partTwoSolution, "Total calibration result with concatenation")
