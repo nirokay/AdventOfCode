@@ -15,12 +15,19 @@ proc getInput*(day: int): string =
     result = file.readFile()
 
     cache[day] = result
+proc getInputStripped*(day: int): string = getInput(day).strip()
 
 proc getInputLines*(day: int): seq[string] =
     let file: string = day.getInput()
+    result = file.split("\n")
+proc getInputLinesStripped*(day: int): seq[string] =
+    let file: string = day.getInputStripped()
     result = file.split("\n")
 
 iterator inputLines*(day: int): string =
     let lines: seq[string] = day.getInputLines()
     for line in lines:
         yield line
+iterator inputLinesStripped*(day: int): string =
+    for line in inputLines(day):
+        yield line.strip()

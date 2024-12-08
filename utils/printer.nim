@@ -10,9 +10,10 @@ proc solution*[T](content: T, customMessage: string = "Solution") =
     let borderTopText: string = &" Part {solutionPartCounter}: "
 
     var
-        solution: string = customMessage & ": " & $content
+        solution: string = &" {customMessage}:  {content} "
         borderBottom: string = repeat(borderChar, solution.len() + 4)
         borderTop: string = borderBottom
+        spacerRow: string = borderChar & repeat('-', solution.len() + 2) & borderChar
 
     for i, c in borderTopText:
         let textCharIndex: int = i + borderTopTextIndent
@@ -30,7 +31,9 @@ proc solution*[T](content: T, customMessage: string = "Solution") =
     # Pretty print:
     echo @[
         "\n" & borderTop,
+        spacerRow,
         &"{borderChar} {solution} {borderChar}",
+        spacerRow,
         borderBottom & "\n"
     ].join("\n")
 
