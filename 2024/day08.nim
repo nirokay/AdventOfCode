@@ -32,31 +32,44 @@ for row, line in inputLines:
         discard antennas.hasKeyOrPut(frequency, @[])
         antennas[frequency].add vec2(col, row)
 
-proc frequencyAntinodes(frequency: char): seq[Vec2] =
+proc frequencyAntinodes(frequency: char, maxHarmonics: int = 1): seq[Vec2] =
     if not antennas.hasKey(frequency):
         raise ValueError.newException("Frequency " & frequency & " unknown.")
     let antennas: seq[Vec2] = antennas[frequency]
 
     for origin in antennas:
         for target in antennas:
-            if origin == target: continue
-            let
-                diff: Vec2 = origin.difference(target)
-                antinode: Vec2 = target.add(diff)
-            result.add antinode
+            if origin == target and maxHarmonics < 2: continue
+            let diff: Vec2 = origin.difference(target)
+            result.add target.add(diff)
+            for harmonic in 2 .. maxHarmonics:
+                result.add target.add(vec2(
+                    diff.x * harmonic,
+                    diff.y * harmonic
+                ))
 
 proc filteredAntinodes(antinodes: seq[Vec2]): seq[Vec2] =
     for node in antinodes.deduplicate():
         if node.x notin 0 .. areaWidth - 1 or node.y notin 0 .. areaHeight - 1: continue
         result.add node
 
-for frequency, antennas in antennas:
+
+# -----------------------------------------------------------------------------
+# Part 1:
+# -----------------------------------------------------------------------------
+
+for frequency, _ in antennas:
     antinodes.add frequency.frequencyAntinodes()
+let partOneSolution: seq[Vec2] = antinodes.filteredAntinodes()
+solution(partOneSolution.len(), "Unique antinode locations inside " & $areaWidth & "x" & $areaHeight & " area")
 
 
 # -----------------------------------------------------------------------------
 # Part 1:
 # -----------------------------------------------------------------------------
 
-let partOneSolution: seq[Vec2] = antinodes.filteredAntinodes()
-solution(partOneSolution.len(), "Unique antinode locations inside " & $areaWidth & "x" & $areaHeight & " area")
+for frequency, _ in antennas:
+    antinodes.add frequency.frequencyAntinodes(maxHarmonics = max(areaWidth, areaHeight))
+let partTwoSolution: seq[Vec2] = antinodes.filteredAntinodes()
+
+solution(partTwoSolution.len(), "Respecting harmonics, unique locations")
