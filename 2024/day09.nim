@@ -115,8 +115,7 @@ proc moveWholeFilesLeft(disk: var Disk) =
                 locatedLength = 0
                 continue
             # Found new block of empty space:
-            if indexStarting == -1:
-                indexStarting = i
+            if indexStarting == -1: indexStarting = i
             # Continuous block of empty spaces:
             inc locatedLength
             # Found perfect length, return immediately:
@@ -138,5 +137,4 @@ var notSoVeryCompactedDisk: Disk = originalDisk
 notSoVeryCompactedDisk.moveWholeFilesLeft()
 
 let partTwoSolution: int = notSoVeryCompactedDisk.fileSystemChecksum()
-#echo notSoVeryCompactedDisk
 solution(partTwoSolution, "Checksum of not fragmented disk")
