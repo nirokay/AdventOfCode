@@ -1,6 +1,6 @@
 # Package
 
-version       = "0.1.0"
+version       = "1.69.420"
 author        = "nirokay"
 description   = "My adventofcode.com solutions!"
 license       = "GPL-3.0-only"
