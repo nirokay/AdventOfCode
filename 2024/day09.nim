@@ -29,12 +29,17 @@ let originalDisk: Disk = block:
             result.add insertedData
     result
 
+proc fileSystemChecksum(disk: Disk): int =
+    for position, fileBlock in disk:
+        if fileBlock.isNone(): break
+        result += position * fileBlock.get().id
+
 
 # -----------------------------------------------------------------------------
 # Part 1:
 # -----------------------------------------------------------------------------
 
-proc moveFileBlocksLeft(disk: var Disk) =
+proc packAllBlocksLeft(disk: var Disk) =
     var farthestDataBlockIndex: int = disk.len() - 1
     iterator locateEmptyIndex(disk: Disk): int =
         for i in 0 .. disk.len() - 1:
@@ -54,11 +59,14 @@ proc moveFileBlocksLeft(disk: var Disk) =
         disk.moveFarthestDataBlock(emptyId)
 
 var veryCompactedDisk: Disk = originalDisk
-veryCompactedDisk.moveFileBlocksLeft()
+veryCompactedDisk.packAllBlocksLeft()
 
-var partOneSolution: int
-for position, fileBlock in veryCompactedDisk:
-    if fileBlock.isNone(): break
-    partOneSolution += position * fileBlock.get().id
-
+let partOneSolution: int = veryCompactedDisk.fileSystemChecksum()
 solution(partOneSolution, "Checksum of packed disk")
+
+
+# -----------------------------------------------------------------------------
+# Part 2:
+# -----------------------------------------------------------------------------
+
+
