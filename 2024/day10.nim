@@ -14,7 +14,7 @@ type
 
 proc vec2(row, col: int): Vec2 = (row, col)
 
-proc getSolution(journeys: seq[Journey]): int =
+proc getSolutionPartOne(journeys: seq[Journey]): int =
     var startingToSummit: Table[Vec2, seq[Vec2]]
     for journey in journeys:
         let
@@ -25,6 +25,16 @@ proc getSolution(journeys: seq[Journey]): int =
         startingToSummit[starting].add summit
     for _, summits in startingToSummit:
         result += summits.len()
+
+proc getSolutionPartTwo(journeys: seq[Journey]): int =
+    var startingToJourney: Table[Vec2, seq[Journey]]
+    for journey in journeys:
+        let starting: Vec2 = journey[0]
+        if not startingToJourney.hasKey(starting): startingToJourney[starting] = @[]
+        startingToJourney[starting].add journey
+
+    for startingPosition, journeys in startingToJourney:
+        result += journeys.len()
 
 let map: Map = block:
     var result: Map
@@ -83,17 +93,19 @@ proc travelPath(currentJourney: Journey, completedJourneys: var seq[Journey]) =
         newRoute.travelPath(completedJourneys)
 
 
-# -----------------------------------------------------------------------------
-# Part 1:
-# -----------------------------------------------------------------------------
-
-var partOnePaths: seq[Journey]
+var journeys: seq[Journey]
 for position in everyNumber(0):
-    travelPath(@[position], partOnePaths)
+    travelPath(@[position], journeys)
 
-for journey in partOnePaths:
+for journey in journeys:
     var heights: seq[int]
     for pos in journey:
         heights.add pos.getTerrain()
 
-solution(partOnePaths.getSolution(), "Trails from 0 -> 9 with gradual incline")
+
+# -----------------------------------------------------------------------------
+# Part 1 & 2:
+# -----------------------------------------------------------------------------
+
+solution(journeys.getSolutionPartOne(), "Sum of visited peaks from each starting point")
+solution(journeys.getSolutionPartTwo(), "Sum of distinct hiking trails")
