@@ -31,7 +31,7 @@ proc hasRepeatingPattern(id: string): bool =
             repeatTimes: int = (id.len() - pattern.len()) div pattern.len() + 1
             constructedNumber: string = pattern.repeat(repeatTimes)
         if id == constructedNumber:
-            echo id, " -> ", pattern, " x", repeatTimes, "\t", constructedNumber
+            # echo id, " -> ", pattern, " x", repeatTimes, "\t", constructedNumber
             return true
 
 
