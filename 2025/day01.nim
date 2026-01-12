@@ -12,21 +12,30 @@ proc getInstructionsIntegers(): seq[int] =
 
 let instructions: seq[int] = getInstructionsIntegers()
 
-proc simulateSafeLock(simProc: proc(point, r: int): int, startingPoint: int = 50): int =
+
+# -----------------------------------------------------------------------------
+# Part 1 & 2:
+# -----------------------------------------------------------------------------
+
+var
+    solutionPart1: int = 0
+    solutionPart2: int = 0 # i have to come back to this one day lol
+
+proc simulateSafeLock(startingPoint: int = 50) =
     var point: int = startingPoint ## current value of lock
-    for instruction in instructions:
+    for i, instruction in instructions:
         point += instruction
         while point notin 0 .. 99:
+            inc solutionPart2
+            # echo i, " !!! (", instruction ,") : ", point
             if point < 0: point += 100
             elif point > 99: point -= 100
-        result = simProc(point, result)
 
-# -----------------------------------------------------------------------------
-# Part 1:
-# -----------------------------------------------------------------------------
+        # echo i, ": ", point
+        if point == 0: inc solutionPart2
+        if point == 0: inc solutionPart1
 
-proc part1(point, r: int): int =
-    result = r
-    if point == 0: inc result
+simulateSafeLock()
 
-solution(simulateSafeLock(part1, 50), "Times the safe lands on zero")
+solution(solutionPart1, "Times the safe lands on zero")
+# solution(solutionPart2, "Time the safe passes zero [INCORRECT]") # < 7243 < 7983 < 8411
