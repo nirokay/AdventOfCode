@@ -12,7 +12,11 @@ proc getInput*(day: int): string =
     if cache.hasKey(day): return cache[day]
 
     let file: string = day.getInputFile().strip()
-    result = file.readFile()
+    try:
+        result = file.readFile()
+    except IOError as e:
+        echo &"Failed to read file {file} from disk.\nError message: {e.msg}"
+        quit 1
 
     cache[day] = result
 proc getInputStripped*(day: int): string = getInput(day).strip()
