@@ -26,6 +26,7 @@ proc findHighestNumberFromIndex(list: Table[int, seq[int]], excludeValues: seq[i
     return (value: 0, index: -1) ## no matches found
 
 proc findHighestJoltageInBank(bank: seq[int], length: Natural = 2): int =
+    echo "Attempting bank: " & $$bank & " with Length: " & $length
     var
         highestNumbers: seq[tuple[value, index: int]] ## temp result for digits
         excludeValues: seq[int]
@@ -38,6 +39,8 @@ proc findHighestJoltageInBank(bank: seq[int], length: Natural = 2): int =
 
     var currentIndex: int = -1
     while highestNumbers.len() < length:
+        stdout.write "\rLength: " & $highestNumbers.len()
+        stdout.flushFile()
         let nextHighest: tuple[value, index: int] = findHighestNumberFromIndex(list, excludeValues, currentIndex, highestNumbers.len() == 0)
         highestNumbers.add nextHighest
         currentIndex = nextHighest.index
@@ -66,14 +69,21 @@ proc findHighestJoltageInBank(bank: seq[int], length: Natural = 2): int =
             assert battery.index > index, "Malformed indexes: " & $battery & "\n" & $highestNumbers & "\n(" & $$bank & ")"
             index = battery.index
 
+    stdout.write "\rCompleted bank: " & $$bank & "\n"
+    stdout.flushFile()
+
 
 
 # -----------------------------------------------------------------------------
 # Part 1:
 # -----------------------------------------------------------------------------
 
-var solutionPart1: seq[int]
+var
+    solutionPart1: seq[int]
+    solutionPart2: seq[int]
 for bank in banks:
     solutionPart1.add bank.findHighestJoltageInBank()
+    # solutionPart2.add bank.findHighestJoltageInBank(length = 12)
 
-solution(solutionPart1.sum(), "Total joltage output")
+solution(solutionPart1.sum(), "Total joltage output (2 digits)")
+solution(solutionPart2.sum(), "Total joltage output (12 digits)")
